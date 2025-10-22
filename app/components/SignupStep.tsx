@@ -14,7 +14,7 @@ export default function SignupStep({ onNext, onBack, referralCode, setReferralCo
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const handleSubmit = async (e: React.MouseEventHandler<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (password !== confirmPassword) {
       alert('Passwords do not match');
       return;
