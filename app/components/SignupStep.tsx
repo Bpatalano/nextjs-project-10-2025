@@ -3,9 +3,11 @@ import posthog from 'posthog-js';
 interface SignupStepProps {
   onNext: () => void;
   onBack: () => void;
+  referralCode: string;
+  setReferralCode: (referralCode: string) => void;
 }
 
-export default function SignupStep({ onNext, onBack }: SignupStepProps) {
+export default function SignupStep({ onNext, onBack, referralCode, setReferralCode }: SignupStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -73,6 +75,8 @@ export default function SignupStep({ onNext, onBack }: SignupStepProps) {
             type="text"
             placeholder="Enter referral code"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={referralCode}
+            onChange={(e) => setReferralCode(e.target.value)}
           />
         </div>
 
