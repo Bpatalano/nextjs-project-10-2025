@@ -1,13 +1,28 @@
 import posthog from 'posthog-js';
+import { useState } from 'react';
+import { createUser } from '../db';
 
 interface SignupStepProps {
   onNext: () => void;
   onBack: () => void;
   referralCode: string;
   setReferralCode: (referralCode: string) => void;
+  setUser: (user: any) => void;
 }
 
-export default function SignupStep({ onNext, onBack, referralCode, setReferralCode }: SignupStepProps) {
+export default function SignupStep({ onNext, onBack, referralCode, setReferralCode, setUser }: SignupStepProps) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const handleSubmit = async (e: React.MouseEventHandler<HTMLButtonElement>) => {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    const user = await createUser(email, password);
+    setUser(user);
+    onNext();
+  }
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -22,23 +37,14 @@ export default function SignupStep({ onNext, onBack, referralCode, setReferralCo
       <div className="space-y-4">
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Full Name
-          </label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
             Email Address
           </label>
           <input
             type="email"
             placeholder="you@example.com"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -50,6 +56,8 @@ export default function SignupStep({ onNext, onBack, referralCode, setReferralCo
             type="password"
             placeholder="Create a password"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -61,6 +69,8 @@ export default function SignupStep({ onNext, onBack, referralCode, setReferralCo
             type="password"
             placeholder="Confirm your password"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
 
@@ -88,10 +98,8 @@ export default function SignupStep({ onNext, onBack, referralCode, setReferralCo
             Back
           </button>
           <button
-            onClick={() => {
-              posthog.capture('signup_form_submitted');
-              onNext();
-            }}
+            onClick={handleSubmit}
+            type="submit"
             className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
           >
             Sign Up

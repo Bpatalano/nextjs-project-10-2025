@@ -6,21 +6,11 @@ import posthog from 'posthog-js';
 interface ReferralStepProps {
   onBack: () => void;
   onReset: () => void;
+  referralCode: string;
 }
 
-export default function ReferralStep({ onBack, onReset }: ReferralStepProps) {
-  const [referralCode, setReferralCode] = useState("");
+export default function ReferralStep({ onBack, onReset, referralCode }: ReferralStepProps) {
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    // Generate random referral code
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let code = "";
-    for (let i = 0; i < 8; i++) {
-      code += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    setReferralCode(code);
-  }, []);
 
   const handleCopy = () => {
     posthog.capture('referral_code_copied', { referral_code: referralCode });

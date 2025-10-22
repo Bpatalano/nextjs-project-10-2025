@@ -1,11 +1,29 @@
+import { useState } from 'react';
 import posthog from 'posthog-js';
+import { getUserByEmail } from '../db';
 
 interface WelcomeStepProps {
   onNext: () => void;
   onSignup: () => void;
+  setUser: (user: any) => void;
 }
 
-export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
+export default function WelcomeStep({ onNext, onSignup, setUser }: WelcomeStepProps) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleSubmit = async (e) => {
+    posthog.capture('signin_submitted');
+    console.log(`SELECT * FROM users WHERE email = ${email}`)
+    const user = await getUserByEmail(email)
+    console.log(user)
+    if (user && user.password === password) {
+      setUser(user)
+      onNext()
+    } else {
+      // Handle invalid credentials
+      alert('Invalid email or password')
+    }
+  }
   return (
     <div className="space-y-6">
       <div className="text-center">
@@ -26,6 +44,8 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
             type="email"
             placeholder="you@example.com"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
 
@@ -37,6 +57,8 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
             type="password"
             placeholder="Enter your password"
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
@@ -50,10 +72,7 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
         </div>
 
         <button
-          onClick={() => {
-            posthog.capture('signin_submitted');
-            onNext();
-          }}
+          onClick={handleSubmit}
           className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
         >
           Sign In

@@ -12,6 +12,7 @@ const REFERRAL_CODE_KEY = 'referral-code';
 export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: string}}) {
   const [step, setStep] = useState(1);
   const [referralCode, setReferralCode] = useState('');
+  const [user, setUser] = useState(null);
   const searchParamsData = React.use(searchParams);
   const referralCodeParam = searchParamsData[REFERRAL_CODE_KEY];
   const handleSignIn = () => {
@@ -25,6 +26,7 @@ export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: 
 
   const handleReset = () => {
     posthog.capture('onboarding_flow_reset', { from_step: step });
+    setUser(null)
     setStep(1);
   };
 
@@ -58,7 +60,7 @@ export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: 
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-white p-8 shadow-xl dark:bg-gray-800">
           {step === 1 && (
-            <WelcomeStep onNext={handleSignIn} onSignup={handleSignup} />
+            <WelcomeStep onNext={handleSignIn} onSignup={handleSignup} setUser={setUser} />
           )}
           {step === 2 && (
             <SuccessStep
@@ -68,10 +70,10 @@ export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: 
             />
           )}
           {step === 3 && (
-            <SignupStep onNext={handleSignupComplete} onBack={handleReset} referralCode={referralCode} setReferralCode={setReferralCode} />
+            <SignupStep onNext={handleSignupComplete} onBack={handleReset} referralCode={referralCode} setReferralCode={setReferralCode} setUser={setUser} />
           )}
-          {step === 4 && (
-            <ReferralStep onBack={handleBackFromReferral} onReset={handleReset} />
+          {step === 4 && user && (
+            <ReferralStep onBack={handleBackFromReferral} onReset={handleReset} referralCode={user.referral_code} />
           )}
         </div>
       </div>
