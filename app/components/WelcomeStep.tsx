@@ -29,14 +29,34 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
           />
         </div>
 
+        <div>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Password
+          </label>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+          />
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            onClick={() => posthog.capture('forgot_password_clicked')}
+            className="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+          >
+            Forgot password?
+          </button>
+        </div>
+
         <button
           onClick={() => {
-            posthog.capture('welcome_step_continue_clicked');
+            posthog.capture('signin_submitted');
             onNext();
           }}
           className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
         >
-          Continue
+          Sign In
         </button>
       </div>
 
