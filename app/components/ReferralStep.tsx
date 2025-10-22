@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import posthog from 'posthog-js';
 
 interface ReferralStepProps {
   onBack: () => void;
@@ -22,6 +23,7 @@ export default function ReferralStep({ onBack, onReset }: ReferralStepProps) {
   }, []);
 
   const handleCopy = () => {
+    posthog.capture('referral_code_copied', { referral_code: referralCode });
     navigator.clipboard.writeText(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -86,7 +88,10 @@ export default function ReferralStep({ onBack, onReset }: ReferralStepProps) {
             Back
           </button>
           <button
-            onClick={onReset}
+            onClick={() => {
+              posthog.capture('referral_flow_completed');
+              onReset();
+            }}
             className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
           >
             Done

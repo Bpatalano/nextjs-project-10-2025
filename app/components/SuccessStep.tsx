@@ -1,3 +1,5 @@
+import posthog from 'posthog-js';
+
 interface SuccessStepProps {
   onReset: () => void;
   onBack: () => void;
@@ -37,19 +39,28 @@ export default function SuccessStep({
 
       <div className="space-y-3">
         <button
-          onClick={onReferFriend}
+          onClick={() => {
+            posthog.capture('refer_friend_clicked');
+            onReferFriend();
+          }}
           className="w-full rounded-lg bg-purple-600 py-3 font-semibold text-white transition-colors hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:bg-purple-500 dark:hover:bg-purple-600"
         >
           Refer a Friend
         </button>
         <button
-          onClick={onReset}
+          onClick={() => {
+            posthog.capture('start_over_clicked');
+            onReset();
+          }}
           className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
         >
           Start Over
         </button>
         <button
-          onClick={onBack}
+          onClick={() => {
+            posthog.capture('back_from_success_clicked');
+            onBack();
+          }}
           className="w-full rounded-lg border border-gray-300 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
         >
           Back

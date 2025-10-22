@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import posthog from 'posthog-js';
 import ProgressIndicator from "@/app/components/ProgressIndicator";
 import WelcomeStep from "@/app/components/WelcomeStep";
 import PasswordStep from "@/app/components/PasswordStep";
@@ -20,18 +21,22 @@ export default function Home() {
   };
 
   const handleReset = () => {
+    posthog.capture('onboarding_flow_reset', { from_step: step });
     setStep(1);
   };
 
   const handleSignup = () => {
+    posthog.capture('signup_initiated');
     setStep(4);
   };
 
   const handleSignupComplete = () => {
+    posthog.capture('signup_completed');
     setStep(3); // Go to success step
   };
 
   const handleReferFriend = () => {
+    posthog.capture('referral_initiated');
     setStep(5); // Go to referral step
   };
 

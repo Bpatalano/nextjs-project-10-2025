@@ -1,3 +1,5 @@
+import posthog from 'posthog-js';
+
 interface SignupStepProps {
   onNext: () => void;
   onBack: () => void;
@@ -82,7 +84,10 @@ export default function SignupStep({ onNext, onBack }: SignupStepProps) {
             Back
           </button>
           <button
-            onClick={onNext}
+            onClick={() => {
+              posthog.capture('signup_form_submitted');
+              onNext();
+            }}
             className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
           >
             Sign Up
@@ -93,7 +98,10 @@ export default function SignupStep({ onNext, onBack }: SignupStepProps) {
       <div className="text-center text-sm text-gray-600 dark:text-gray-400">
         Already have an account?{" "}
         <button
-          onClick={onBack}
+          onClick={() => {
+            posthog.capture('signup_step_signin_link_clicked');
+            onBack();
+          }}
           className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
         >
           Sign in

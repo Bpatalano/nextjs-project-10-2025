@@ -1,3 +1,5 @@
+import posthog from 'posthog-js';
+
 interface WelcomeStepProps {
   onNext: () => void;
   onSignup: () => void;
@@ -28,7 +30,10 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
         </div>
 
         <button
-          onClick={onNext}
+          onClick={() => {
+            posthog.capture('welcome_step_continue_clicked');
+            onNext();
+          }}
           className="w-full rounded-lg bg-indigo-600 py-3 font-semibold text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500 dark:hover:bg-indigo-600"
         >
           Continue
@@ -38,7 +43,10 @@ export default function WelcomeStep({ onNext, onSignup }: WelcomeStepProps) {
       <div className="text-center text-sm text-gray-600 dark:text-gray-400">
         Don't have an account?{" "}
         <button
-          onClick={onSignup}
+          onClick={() => {
+            posthog.capture('welcome_step_signup_clicked');
+            onSignup();
+          }}
           className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
         >
           Sign up
