@@ -11,7 +11,7 @@ interface WelcomeStepProps {
 export default function WelcomeStep({ onNext, onSignup, setUser }: WelcomeStepProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     posthog.capture('signin_submitted');
     console.log(`SELECT * FROM users WHERE email = ${email}`)
     const user = await getUserByEmail(email)
