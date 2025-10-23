@@ -1,6 +1,6 @@
 "use client";
 
-import React,{ useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import posthog from 'posthog-js';
 import WelcomeStep from "@/app/components/WelcomeStep";
 import SignupStep from "@/app/components/SignupStep";
@@ -9,12 +9,22 @@ import ReferralStep from "@/app/components/ReferralStep";
 
 const REFERRAL_CODE_KEY = 'referral-code';
 
-export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: string}}) {
+interface User {
+  email: string;
+  password: string;
+  referral_code: string;
+  id: number;
+}
+
+export default function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [REFERRAL_CODE_KEY]: string | undefined }>
+}) {
   const [step, setStep] = useState(1);
   const [referralCode, setReferralCode] = useState('');
-  const [user, setUser] = useState(null);
-  const searchParamsData = React.use(searchParams);
-  const referralCodeParam = searchParamsData[REFERRAL_CODE_KEY];
+  const [user, setUser] = useState<User | null>(null);
+  const {[REFERRAL_CODE_KEY]: referralCodeParam} = use(searchParams)
   const handleSignIn = () => {
     posthog.capture('signin_completed');
     setStep(2);
@@ -72,7 +82,7 @@ export default function Home({searchParams}: {searchParams: {REFERRAL_CODE_KEY: 
           {step === 3 && (
             <SignupStep onNext={handleSignupComplete} onBack={handleReset} referralCode={referralCode} setReferralCode={setReferralCode} setUser={setUser} />
           )}
-          {step === 4 && user && (
+          {step === 4 && user != null && (
             <ReferralStep onBack={handleBackFromReferral} onReset={handleReset} referralCode={user.referral_code} />
           )}
         </div>
